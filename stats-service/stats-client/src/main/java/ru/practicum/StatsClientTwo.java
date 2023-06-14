@@ -22,7 +22,7 @@ import java.util.*;
 public class StatsClientTwo {
     private final RestTemplate restTemplate;
 
-    private final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Value("${stats-server.url}")
     private String url;

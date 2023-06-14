@@ -19,7 +19,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class StatsClient extends BaseClient {
-    private final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
     public StatsClient(@Value("${stats-server.url}") String url, RestTemplateBuilder restTemplateBuilder) {
