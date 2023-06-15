@@ -12,6 +12,7 @@ import java.util.List;
 
 import static ru.practicum.service.StatsMapper.toStats;
 
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +28,7 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<ViewStatsDto> getCountStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        validateDate(start, end);
         if (uris.isEmpty()) {
             if (unique)
                 return statsRepository.getCountViewStatsWithUniqueIp(start, end);
@@ -35,5 +37,10 @@ public class StatsServiceImpl implements StatsService {
         if (unique)
             return statsRepository.getCountViewStatsFromListUriWithUniqueIp(start, end, uris);
         return statsRepository.getCountViewStatsFromListUri(start, end, uris);
+    }
+
+    private void validateDate(LocalDateTime start, LocalDateTime end) {
+        if (start.isAfter(end))
+            throw new DateException("Дата старта должна быть раньше даты окончания");
     }
 }

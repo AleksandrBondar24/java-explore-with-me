@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -43,10 +44,11 @@ public class StatsClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getStatsCount(String start, String end, List<String> uris, Boolean unique) {
+        String joinUrl = String.join(",", uris);
         final Map<String, Object> parameters = Map.of(
                 "start", encode(start),
                 "end", encode(end),
-                "uris", uris,
+                "uris", joinUrl,
                 "unique", unique
         );
         log.debug("Получен ответ сервиса статистики");

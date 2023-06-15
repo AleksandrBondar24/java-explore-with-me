@@ -45,10 +45,11 @@ public class StatsClientTwo {
     }
 
     public ResponseEntity<Object> getStatsCount(String start, String end, List<String> uris, Boolean unique) {
+        String joinUrl = String.join(",", uris);
         final Map<String, Object> parameters = Map.of(
                 "start", encode(start),
                 "end", encode(end),
-                "uris", uris,
+                "uris", joinUrl,
                 "unique", unique
         );
 
