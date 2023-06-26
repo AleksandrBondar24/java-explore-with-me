@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.StatsClient;
+import ru.practicum.StatsClientTwo;
 import ru.practicum.dto.*;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Category;
@@ -34,7 +34,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final StatsClient statsClient;
+    private final StatsClientTwo statsClient;
 
 
     @Override
@@ -122,7 +122,7 @@ public class EventServiceImpl implements EventService {
                 .stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
-        final List<ViewStatsDto> stats = Objects.requireNonNull(statsClient.getStatsCount(createUris(result)));
+        final List<ViewStatsDto> stats = statsClient.getStatsCount(createUris(result), LocalDateTime.now().minusDays(1000), LocalDateTime.now());
         return addStats(result, sort, stats);
     }
 
@@ -131,7 +131,7 @@ public class EventServiceImpl implements EventService {
         statsClient.saveStats(request, app);
         final EventFullDto event = toEventFullDto(eventRepository.findByIdAndState(id, PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено")));
-        final ViewStatsDto stat = Objects.requireNonNull(statsClient.getStatsCount(List.of(toUrl(event.getId()))))
+        final ViewStatsDto stat = statsClient.getStatsCount(List.of(toUrl(event.getId())), LocalDateTime.now().minusDays(1000), LocalDateTime.now())
                 .stream()
                 .findAny()
                 .get();
@@ -219,8 +219,8 @@ public class EventServiceImpl implements EventService {
         if (requests.getCategories() != null)
             conditions.and(qEvent.category.id.in(requests.getCategories()));
         if (requests.getText() != null) {
-            conditions.and(qEvent.annotation.likeIgnoreCase(requests.getText()));
-            conditions.and(qEvent.description.likeIgnoreCase(requests.getText()));
+            conditions.and(qEvent.annotation.containsIgnoreCase(requests.getText()));
+            conditions.and(qEvent.description.containsIgnoreCase(requests.getText()));
         }
         if (requests.getPaid() != null)
             conditions.and(qEvent.paid.eq(requests.getPaid()));

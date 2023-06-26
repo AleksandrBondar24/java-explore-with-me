@@ -45,11 +45,11 @@ public class StatsClientTwo {
         log.debug("Ответ от stats-server: {}", response);
     }
 
-    public List<ViewStatsDto> getStatsCount(List<String> uris) {
+    public List<ViewStatsDto> getStatsCount(List<String> uris,LocalDateTime start,LocalDateTime end) {
         String joinUrl = String.join(",", uris);
         final Map<String, Object> parameters = Map.of(
-                "start", "2000-00-01 00:00:00",
-                "end", encode(LocalDateTime.now()),
+                "start", encode(start),
+                "end", encode(end),
                 "uris", joinUrl,
                 "unique", true
         );
