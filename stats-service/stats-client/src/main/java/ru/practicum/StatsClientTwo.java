@@ -45,13 +45,16 @@ public class StatsClientTwo {
         log.debug("Ответ от stats-server: {}", response);
     }
 
-    public List<ViewStatsDto> getStatsCount(List<String> uris,LocalDateTime start,LocalDateTime end) {
-        String joinUrl = String.join(",", uris);
+    public List<ViewStatsDto> getStatsCount(List<String> listUris, LocalDateTime dateStart, LocalDateTime dateEnd) {
+        final String uris = String.join(",", listUris);
+        final String start = encode(dateStart);
+        final String end = encode(dateEnd);
+        final Boolean unique = true;
         final Map<String, Object> parameters = Map.of(
-                "start", encode(start),
-                "end", encode(end),
-                "uris", joinUrl,
-                "unique", true
+                "start", start,
+                "end", end,
+                "uris", uris,
+                "unique", unique
         );
 
         final ResponseEntity<ViewStatsDto[]> response = restTemplate.getForEntity(url + "/stats?start={start}&end={end}&uris={uris}&unique={unique}", ViewStatsDto[].class, parameters);

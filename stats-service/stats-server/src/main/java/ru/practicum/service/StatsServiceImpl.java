@@ -38,7 +38,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     private void validateDate(LocalDateTime start, LocalDateTime end) {
-        if (start.isAfter(end))
+        if (start == null || end == null || start.isAfter(end))
             throw new DateException("Дата старта должна быть раньше даты окончания");
     }
 }
