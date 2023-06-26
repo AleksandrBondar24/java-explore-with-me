@@ -42,13 +42,14 @@ public class StatsClient extends BaseClient {
         log.debug("Статистика сохранена");
     }
 
-    public List<ViewStatsDto> getStatsCount(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+    public List<ViewStatsDto> getStatsCount(List<String> uris) {
         String joinUrl = String.join(",", uris);
+        LocalDateTime viewsFromThisDate = LocalDateTime.of(2001, 1, 1, 0, 0, 0);
         final Map<String, Object> parameters = Map.of(
-                "start", encode(start),
-                "end", encode(end),
+                "start", encode(viewsFromThisDate),
+                "end", encode(LocalDateTime.now()),
                 "uris", joinUrl,
-                "unique", unique
+                "unique", true
         );
         log.debug("Получен ответ сервиса статистики");
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);

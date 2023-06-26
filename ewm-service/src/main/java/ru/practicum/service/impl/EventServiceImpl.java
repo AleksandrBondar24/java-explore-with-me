@@ -118,18 +118,11 @@ public class EventServiceImpl implements EventService {
                 throw new NumberFormatException("Дата старта должна быть раньше даты окончания");
         statsClient.saveStats(request, app);
         final BooleanExpression conditions = createSearchConditionsForPublic(requestsParam);
-        final List<Event> events = eventRepository.findAll(conditions, requestsParam.getPage()).toList();
-        final List<EventShortDto> result = events
+        final List<EventShortDto> result = eventRepository.findAll(conditions, requestsParam.getPage())
                 .stream()
                 .map(EventMapper::toEventShortDto)
                 .collect(Collectors.toList());
-        final List<Event> eventsSorted = events.stream().sorted(Comparator.comparing(Event::getPublishedOn)).collect(Collectors.toList());
-        final List<ViewStatsDto> stats;
-        if (requestsParam.getRangeStart() == null || requestsParam.getRangeEnd() == null) {
-            stats = Objects.requireNonNull(statsClient.getStatsCount(eventsSorted.get(eventsSorted.size() - 1).getPublishedOn(), LocalDateTime.now().plusDays(1), createUris(result), true));
-        } else {
-            stats = Objects.requireNonNull(statsClient.getStatsCount(requestsParam.getRangeStart(), requestsParam.getRangeEnd(), createUris(result), true));
-        }
+        final List<ViewStatsDto> stats = Objects.requireNonNull(statsClient.getStatsCount(createUris(result)));
         return addStats(result, sort, stats);
     }
 
@@ -138,7 +131,7 @@ public class EventServiceImpl implements EventService {
         statsClient.saveStats(request, app);
         final EventFullDto event = toEventFullDto(eventRepository.findByIdAndState(id, PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено")));
-        final ViewStatsDto stat = Objects.requireNonNull(statsClient.getStatsCount(event.getPublishedOn(), LocalDateTime.now().plusDays(1), List.of(toUrl(event.getId())), true))
+        final ViewStatsDto stat = Objects.requireNonNull(statsClient.getStatsCount(List.of(toUrl(event.getId()))))
                 .stream()
                 .findAny()
                 .get();
