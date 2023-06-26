@@ -44,10 +44,11 @@ public class StatsClient extends BaseClient {
 
     public List<ViewStatsDto> getStatsCount(List<String> uris) {
         String joinUrl = String.join(",", uris);
-        LocalDateTime viewsFromThisDate = LocalDateTime.of(2001, 1, 1, 0, 0, 0);
+        LocalDateTime start = LocalDateTime.of(2022, 1, 6, 13, 30, 38);
+        LocalDateTime end = LocalDateTime.of(2097, 9, 6, 13, 30, 38);
         final Map<String, Object> parameters = Map.of(
-                "start", encode(viewsFromThisDate),
-                "end", encode(LocalDateTime.now()),
+                "start", encode(start),
+                "end", encode(end),
                 "uris", joinUrl,
                 "unique", true
         );
