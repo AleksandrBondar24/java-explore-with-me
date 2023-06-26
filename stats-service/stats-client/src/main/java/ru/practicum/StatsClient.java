@@ -50,7 +50,7 @@ public class StatsClient extends BaseClient {
                 "start", encode(start),
                 "end", encode(end),
                 "uris", joinUrl,
-                "unique", true
+                "unique", "true"
         );
         log.debug("Получен ответ сервиса статистики");
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
