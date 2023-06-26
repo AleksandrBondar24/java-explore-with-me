@@ -126,7 +126,7 @@ public class EventServiceImpl implements EventService {
         final List<Event> eventsSorted = events.stream().sorted(Comparator.comparing(Event::getPublishedOn)).collect(Collectors.toList());
         final List<ViewStatsDto> stats;
         if (requestsParam.getRangeStart() == null || requestsParam.getRangeEnd() == null) {
-            stats = Objects.requireNonNull(statsClient.getStatsCount(eventsSorted.get(eventsSorted.size() - 1).getPublishedOn(), LocalDateTime.now(), createUris(result), true));
+            stats = Objects.requireNonNull(statsClient.getStatsCount(eventsSorted.get(eventsSorted.size() - 1).getPublishedOn(), LocalDateTime.now().plusDays(1), createUris(result), true));
         } else {
             stats = Objects.requireNonNull(statsClient.getStatsCount(requestsParam.getRangeStart(), requestsParam.getRangeEnd(), createUris(result), true));
         }
@@ -138,7 +138,7 @@ public class EventServiceImpl implements EventService {
         statsClient.saveStats(request, app);
         final EventFullDto event = toEventFullDto(eventRepository.findByIdAndState(id, PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено")));
-        final ViewStatsDto stat = Objects.requireNonNull(statsClient.getStatsCount(event.getPublishedOn(), LocalDateTime.now(), List.of(toUrl(event.getId())), true))
+        final ViewStatsDto stat = Objects.requireNonNull(statsClient.getStatsCount(event.getPublishedOn(), LocalDateTime.now().plusDays(1), List.of(toUrl(event.getId())), true))
                 .stream()
                 .findAny()
                 .get();
