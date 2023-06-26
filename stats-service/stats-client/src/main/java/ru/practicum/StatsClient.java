@@ -42,10 +42,8 @@ public class StatsClient extends BaseClient {
         log.debug("Статистика сохранена");
     }
 
-    public List<ViewStatsDto> getStatsCount(List<String> uris) {
+    public List<ViewStatsDto> getStatsCount(List<String> uris, LocalDateTime start, LocalDateTime end) {
         String joinUrl = String.join(",", uris);
-        LocalDateTime start = LocalDateTime.of(2022, 1, 6, 13, 30, 38);
-        LocalDateTime end = LocalDateTime.of(2097, 9, 6, 13, 30, 38);
         final Map<String, Object> parameters = Map.of(
                 "start", encode(start),
                 "end", encode(end),

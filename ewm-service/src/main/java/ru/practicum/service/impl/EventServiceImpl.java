@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.StatsClientTwo;
+import ru.practicum.StatsClient;
 import ru.practicum.dto.*;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Category;
@@ -34,7 +34,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
-    private final StatsClientTwo statsClient;
+    private final StatsClient statsClient;
 
 
     @Override
@@ -219,8 +219,8 @@ public class EventServiceImpl implements EventService {
         if (requests.getCategories() != null)
             conditions.and(qEvent.category.id.in(requests.getCategories()));
         if (requests.getText() != null) {
-            conditions.and(qEvent.annotation.containsIgnoreCase(requests.getText()));
-            conditions.and(qEvent.description.containsIgnoreCase(requests.getText()));
+            conditions.and(qEvent.annotation.likeIgnoreCase(requests.getText()));
+            conditions.and(qEvent.description.likeIgnoreCase(requests.getText()));
         }
         if (requests.getPaid() != null)
             conditions.and(qEvent.paid.eq(requests.getPaid()));
