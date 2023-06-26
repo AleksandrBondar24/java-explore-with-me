@@ -43,7 +43,7 @@ public class BaseClient {
                 ewmServerResponse = rest.exchange(path, method, requestEntity, new ParameterizedTypeReference<>() {
                 });
             }
-        } catch (Exception eException) {
+        } catch (Exception exception) {
             return Collections.emptyList();
         }
         return prepareStatsServiceResponse(ewmServerResponse);
