@@ -4,13 +4,13 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import ru.practicum.dto.ViewStatsDto;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
 @Service
 public class BaseClient {
     protected final RestTemplate rest;
@@ -37,9 +37,11 @@ public class BaseClient {
         ResponseEntity<List<ViewStatsDto>> ewmServerResponse;
         try {
             if (parameters != null) {
-                ewmServerResponse = rest.exchange(path, method, requestEntity, new ParameterizedTypeReference<List<ViewStatsDto>>() {}, parameters);
+                ewmServerResponse = rest.exchange(path, method, requestEntity, new ParameterizedTypeReference<>() {
+                }, parameters);
             } else {
-                ewmServerResponse = rest.exchange(path, method, requestEntity, new ParameterizedTypeReference<List<ViewStatsDto>>() {});
+                ewmServerResponse = rest.exchange(path, method, requestEntity, new ParameterizedTypeReference<>() {
+                });
             }
         } catch (Exception eException) {
             return Collections.emptyList();
@@ -64,7 +66,6 @@ public class BaseClient {
         if (response.hasBody()) {
             return responseBuilder.body(response.getBody()).getBody();
         }
-
         return Collections.emptyList();
     }
 }
