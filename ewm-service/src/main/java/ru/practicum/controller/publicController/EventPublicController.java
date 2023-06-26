@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventPublicController {
     private final EventService eventService;
-    private final String APP = "ewm-main-service";
+    private static final String APP = "ewm-main-service";
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(required = false) @Size(min = 1, max = 7000) String text,
