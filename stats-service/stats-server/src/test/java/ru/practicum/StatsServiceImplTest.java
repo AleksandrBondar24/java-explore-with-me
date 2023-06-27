@@ -47,40 +47,40 @@ public class StatsServiceImplTest {
 
     @Test
     void getStats() {
-        when(statsRepository.getViewStatsCount(any(),any()))
+        when(statsRepository.getViewStatsCount(any(), any()))
                 .thenReturn(Collections.emptyList());
 
-        var result = statsService.getCountStats(LocalDateTime.now(),LocalDateTime.now().plusDays(1), List.of(""),false);
+        var result = statsService.getCountStats(LocalDateTime.now(), LocalDateTime.now().plusDays(1), List.of(""), false);
 
         assertThat(result, notNullValue());
         assertThat("isEmpty", result.isEmpty());
-        verify(statsRepository, times(0)).getViewStatsCount(any(),any());
+        verify(statsRepository, times(0)).getViewStatsCount(any(), any());
 
-        when(statsRepository.getCountViewStatsWithUniqueIp(any(),any()))
+        when(statsRepository.getCountViewStatsWithUniqueIp(any(), any()))
                 .thenReturn(Collections.emptyList());
 
-        var result1 = statsService.getCountStats(LocalDateTime.now(),LocalDateTime.now().plusDays(1), List.of(""),true);
+        var result1 = statsService.getCountStats(LocalDateTime.now(), LocalDateTime.now().plusDays(1), List.of(""), true);
 
         assertThat(result1, notNullValue());
         assertThat("isEmpty", result1.isEmpty());
-        verify(statsRepository, times(0)).getCountViewStatsWithUniqueIp(any(),any());
+        verify(statsRepository, times(0)).getCountViewStatsWithUniqueIp(any(), any());
 
-        when(statsRepository.getCountViewStatsFromListUri(any(),any(),any()))
+        when(statsRepository.getCountViewStatsFromListUri(any(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
-        var result2 = statsService.getCountStats(LocalDateTime.now(),LocalDateTime.now().plusDays(1), List.of("/t"),false);
+        var result2 = statsService.getCountStats(LocalDateTime.now(), LocalDateTime.now().plusDays(1), List.of("/t"), false);
 
         assertThat(result2, notNullValue());
         assertThat("isEmpty", result2.isEmpty());
-        verify(statsRepository, times(0)).getCountViewStatsFromListUri(any(),any(),any());
+        verify(statsRepository, times(0)).getCountViewStatsFromListUri(any(), any(), any());
 
-        when(statsRepository.getCountViewStatsFromListUriWithUniqueIp(any(),any(),any()))
+        when(statsRepository.getCountViewStatsFromListUriWithUniqueIp(any(), any(), any()))
                 .thenReturn(Collections.emptyList());
 
-        var result3 = statsService.getCountStats(LocalDateTime.now(),LocalDateTime.now().plusDays(1), List.of("/t"),true);
+        var result3 = statsService.getCountStats(LocalDateTime.now(), LocalDateTime.now().plusDays(1), List.of("/t"), true);
 
         assertThat(result3, notNullValue());
         assertThat("isEmpty", result3.isEmpty());
-        verify(statsRepository, times(0)).getCountViewStatsFromListUri(any(),any(),any());
+        verify(statsRepository, times(0)).getCountViewStatsFromListUri(any(), any(), any());
     }
 }

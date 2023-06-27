@@ -3,15 +3,13 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.DateException;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.repository.StatsRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static ru.practicum.service.StatsMapper.toStats;
-
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +21,7 @@ public class StatsServiceImpl implements StatsService {
     @Override
     @Transactional
     public void saveStats(EndpointHitDto endpointHit) {
-        statsRepository.save(toStats(endpointHit));
+        statsRepository.save(StatsMapper.toStats(endpointHit));
     }
 
     @Override
@@ -40,7 +38,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     private void validateDate(LocalDateTime start, LocalDateTime end) {
-        if (start.isAfter(end))
+        if (start == null || end == null || start.isAfter(end))
             throw new DateException("Дата старта должна быть раньше даты окончания");
     }
 }
