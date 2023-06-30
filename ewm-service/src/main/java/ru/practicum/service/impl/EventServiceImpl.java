@@ -35,7 +35,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final StatsClientTwo statsClient;
-    private final static String url = "/events/";
+    private final static String URL = "/events/";
 
 
     @Override
@@ -133,7 +133,7 @@ public class EventServiceImpl implements EventService {
         statsClient.saveStats(request, app);
         final EventFullDto event = toEventFullDto(eventRepository.findByIdAndState(id, PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено")));
-        final ViewStatsDto stat = statsClient.getStatsCount(List.of(url + event.getId()), LocalDateTime.now().minusDays(1000), LocalDateTime.now())
+        final ViewStatsDto stat = statsClient.getStatsCount(List.of(URL + event.getId()), LocalDateTime.now().minusDays(1000), LocalDateTime.now())
                 .stream()
                 .findAny()
                 .get();
@@ -176,7 +176,7 @@ public class EventServiceImpl implements EventService {
     private List<String> createUris(List<EventShortDto> result) {
         return result
                 .stream()
-                .map(r -> url + r.getId())
+                .map(r -> URL + r.getId())
                 .collect(Collectors.toList());
     }
 
