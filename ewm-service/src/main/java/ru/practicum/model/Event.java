@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table(name = "events")
+@Builder
 public class Event {
     @Id
     @Column(name = "id")
