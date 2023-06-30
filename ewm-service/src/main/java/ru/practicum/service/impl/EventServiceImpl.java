@@ -35,7 +35,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final StatsClientTwo statsClient;
-    private final static String URL = "/events/";
+    private static final String URL = "/events/";
 
 
     @Override
