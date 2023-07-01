@@ -35,6 +35,7 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final StatsClientTwo statsClient;
+    private static final String URL = "/events/";
 
 
     @Override
@@ -43,7 +44,8 @@ public class EventServiceImpl implements EventService {
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2)))
             throw new IllegalStateException("Дата и время на которые намечено событие не может быть раньше," +
                     " чем через два часа от текущего момента");
-        final User user = getUserRepository(userId);
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором : " + userId + " не найден."));
         final Category category = chekCategory(newEventDto.getCategory());
         final Event event = toEvent(newEventDto, user, category);
         return EventMapper.toEventFullDto(eventRepository.save(event));
@@ -131,17 +133,12 @@ public class EventServiceImpl implements EventService {
         statsClient.saveStats(request, app);
         final EventFullDto event = toEventFullDto(eventRepository.findByIdAndState(id, PUBLISHED)
                 .orElseThrow(() -> new NotFoundException("Событие не найдено")));
-        final ViewStatsDto stat = statsClient.getStatsCount(List.of(toUrl(event.getId())), LocalDateTime.now().minusDays(1000), LocalDateTime.now())
+        final ViewStatsDto stat = statsClient.getStatsCount(List.of(URL + event.getId()), LocalDateTime.now().minusDays(1000), LocalDateTime.now())
                 .stream()
                 .findAny()
                 .get();
         event.setViews(stat.getHits());
         return event;
-    }
-
-    private User getUserRepository(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь с идентификатором : " + userId + " не найден."));
     }
 
     private void checkUser(Long userId) {
@@ -160,17 +157,14 @@ public class EventServiceImpl implements EventService {
             throw new IllegalStateException("Дата и время на которые намечено событие не может быть раньше,чем за час до времени публикации");
     }
 
-    private String toUrl(Long id) {
-        return "/events/" + id;
-    }
-
     private Long toId(String url) {
         String[] uri = url.split("/");
         return Long.valueOf(uri[uri.length - 1]);
     }
 
     private List<EventShortDto> addStats(List<EventShortDto> result, String sort, List<ViewStatsDto> stats) {
-        addViews(result, stats);
+        final Map<Long, Long> statsMap = stats.stream().collect(Collectors.toMap((v -> toId(v.getUri())), (ViewStatsDto::getHits)));
+        result.forEach(e -> e.setViews(statsMap.get(e.getId())));
         if (sort.equals("VIEWS"))
             return result
                     .stream()
@@ -182,16 +176,8 @@ public class EventServiceImpl implements EventService {
     private List<String> createUris(List<EventShortDto> result) {
         return result
                 .stream()
-                .map(r -> toUrl(r.getId()))
+                .map(r -> URL + r.getId())
                 .collect(Collectors.toList());
-    }
-
-    private void addViews(List<EventShortDto> result, List<ViewStatsDto> stats) {
-        result
-                .forEach(e -> stats.forEach(s -> {
-                    if (toId(s.getUri()).equals(e.getId()))
-                        e.setViews(s.getHits());
-                }));
     }
 
     private BooleanExpression createSearchConditionsForAdmin(RequestsParamEvent requests) {
