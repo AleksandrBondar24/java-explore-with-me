@@ -43,5 +43,5 @@ API основного сервиса разделен на три части:
   - API для работы со статистикой посещений
     
 ## Спецификация REST API swagger
-- [Основной сервис]()
+- [Основной сервис](https://github.com/AleksandrBondar24/java-explore-with-me/blob/main/ewm-main-service-spec.json)
 - [Сервис статистики]()
